@@ -1,0 +1,41 @@
+{
+  "name": "express-fcm-to-apns",
+  "version": "0.0.1",
+  "description": "Express middleware that intercepts FCM token storage calls and listens for messages, converting them to APNS",
+  "keywords": [
+    "apns",
+    "express",
+    "fcm"
+  ],
+  "main": "src/index.ts",
+  "author": "Kris Pomphrey <kris@tkf.network>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint 'src/**/*.{json,ts,tsx}'",
+    "prettier": "prettier 'src/**/*.{ts,tsx,json}'",
+    "prettier:write": "yarn prettier --write"
+  },
+  "dependencies": {
+    "express-http-proxy": "^1.6.2",
+    "object-hash": "^2.2.0",
+    "push-receiver": "^2.1.1",
+    "ramda": "^0.27.1",
+    "rxjs": "^7.3.0"
+  },
+  "peerDependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express-http-proxy": "^1.6.2",
+    "@types/node": "^16.4.0",
+    "@types/object-hash": "^2.1.1",
+    "@types/ramda": "^0.27.44",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint": "^7.31.0",
+    "prettier": "^2.3.2",
+    "typescript": "^4.3.5"
+  }
+}
