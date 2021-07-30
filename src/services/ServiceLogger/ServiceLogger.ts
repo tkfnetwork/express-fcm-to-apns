@@ -1,7 +1,11 @@
-import { Logger } from 'winston';
+import { LoggerType } from './types';
 
-export type LoggerType = typeof console | Logger;
-
+/**
+ * Service Logger
+ *
+ * Class that attachs a logger to the chil
+ * class when extended
+ */
 export class ServiceLogger {
   logger: LoggerType | undefined;
 
@@ -11,5 +15,10 @@ export class ServiceLogger {
     }
   }
 
+  /**
+   * Attach a logger to this class
+   *
+   * @param {object} logger
+   */
   attachLogger = (logger: LoggerType) => (this.logger = logger);
 }

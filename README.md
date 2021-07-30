@@ -1,134 +1,109 @@
-# 📲 iOS APNS Proxy Service
+# 📥📲 Express FCM to APN middleware
 
-Express app that will intercept `/comms/device_token`, injecting a token that is registered with the express app and listen for FCM push notifications for that token.
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) ![Coverage](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/badge.svg)
 
-It's sole purpose is to be used with an iOS simulator, on macOS to show push notifications inside the simulator.
 
-### Resources
 
- - https://alexbartis.medium.com/sending-push-notifications-to-the-ios-simulator-2e97d395a0fc
+Push notifications are (somewhat) supported inside the iOS simulator on mac.  They can be achieved by creating [APNS files](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification) and pushing them to the iOS simulator by dragging and dropping onto the simulator or using `xcrun`.
 
-## Installation
+This middleware takes advantage of the later by intercepting outgoing FCM tokens (when you make a request to save your FCM token to an API) and placing itself in the middle.
 
-Run `yarn` from the root
+## Install
 
-### iOS
+```
+yarn add express-fcm-to-apns
+```
+```
+npm i express-fcm-to-apns
+```
+
+### Application code
+This middleware will only work if the application code has been setup to handle incoming APNS messages via the `userNotificationCenter`. For example, if you are using `react-native` and have followed the official guides to install firebase into your app then APNS will not work out of the box.
+
 In order for the application to show notifications properly the following must be present in the `AppDelegate.m` and `AppDelegate.h`
-
 #### `AppDelegate.h`
 
-```Objective-C
+```objective-c
 #import <UserNotifications/UserNotifications.h>
 
 @interface AppDelegate : UIResponder <UNUserNotificationCenterDelegate>
 ```
 
 #### `AppDelegate.m`
-```Objective-C
+```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // ... all your other stuff
+    
+    // ... rest of the application code
 
-    // iOS simulator APNS
+    // Assign at least one notification handler
     #if TARGET_IPHONE_SIMULATOR
         [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
     #endif
 }
 
-// --- iOS simulator APNS ---
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
+
+  // Handle notification inside the simulator
   #if TARGET_IPHONE_SIMULATOR
     completionHandler(UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionBanner);
   #endif
+
 }
-// --- iOS simulator APNS ---
 ```
 
-## Running
+## Usage
+For this to work you will need to be running the iOS simulator and a small express app.  For example, if your app is pointing at `https://path.to.host/my/api/` , you'll want to point it to your local express app `http://localhost:8080/my/api/`.  You can then pass in the api url to listen to via the options.  Here is an example in express:
 
-Run `yarn start` from the root
-
-## Environment
-
-There are several required environment variables, which are located in `.env.example`:
-
-```
-# Port to run express on
-API_PORT=3080
-
-# API path prefix, separate from the api host
-API_PATH=/api/v1
-
-# Log every request and response to the console
-DEBUG_VERBOSE=false
-
-# FCM sender ID, found in the cloud messaging console
-SENDER_ID=123456789
-
-# Proxy API host (without the path)
-PROXY_API=my.api.com
-
-# Whether the proxy API is https or not
-PROXY_HTTPS=true
-
-# APNS directory to store the generated APNS files
-APNS_DIR=/tmp
-
-# Simulator UUID
-APNS_SIMULATOR_UUID=12345678-1234-1234-12345678
-
-# App bundle ID to target
-APNS_TARGET_BUNDLE=com.my.bundle
+```ts
+app.use(
+  fcmToApns({
+    apiUrl: 'https://path.to.host/',
+    apns: {
+      dir: '/tmp',
+      targetBundle: 'com.my.app',
+      targetDevice: 'booted',
+    },
+    interceptPath: '/api/v1/token/',
+    logger: console,
+    proxyOpts: {
+      https: true,
+    },
+    senderId: '1234321234',
+    tokenPath: ['data', 'token'],
+  })
+);
 ```
 
-You should create a `.env.local` and add your own settings there.  Typically you will only need the following in `.env.local`
+## Options
 
-```
-# FCM
-SENDER_ID=123456789
+**\* required**.
 
-# Proxy
-PROXY_API=my.api.com
-PROXY_HTTPS=true
+Property | Type | Description
+---------|------|-------------
+`apiUrl`*   | `string` | This is your proxy API host (without any suffixes such as `/api/v1/`) as this will be handled when you make the requests to the root express app
+`apns.dir`* | `string` | The directory to write the APNS files too
+`apns.targetBundle`* | `string` | This is the bundle name on the simulator that will be targeted with the APNS files
+`apns.targetDevice`* | `string` | Supply the iOS simulator UUID, or simply supply `"booted"` when there is only one simulator running 
+`interceptPath`* | `string` | The API proxy path that will be interecepted. For example if you post your token to `/api/v1/token` then you should supply that to this property
+`logger` | `console \| Logger` | An optional logger. Currently will accept a `winston` logger or the `console`
+`proxyOpts` | `object` | Supply options directly to the `express-http-proxy` function, [takes any of the core options](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/express-http-proxy/index.d.ts#L16)
+`senderId`* | `string` | This is the FCM sender ID which can be found in your firebase console
+`tokenPath`* | `string[]` | Supply the path, as array segments, in the post body to the token that is being posted e.g. `['data', 'token']` for `{ data: { token: '<some_token>' }}`
 
-# APNS
-APNS_TARGET_BUNDLE=com.my.bundle
-```
+## How it works
 
-## How do I find the simulator UUID?
-Make sure your simulator is booted and run:
+This middleware utilises [`express-http-proxy`](https://www.npmjs.com/package/express-http-proxy) and [`push-receiver`](https://www.npmjs.com/package/push-receiver) under the hood with the former used to intercept the token call (and pass all other calls unaffected on to the underlying API) and the later used to register a GCM and FCM token and start listening for messages to that token.
 
-```
-xcrun simctl list | grep "(Booted)"
-```
+For example, here is the typical firebase react-native flow:
 
-If you only have 1 simulator device running then the uuid defaults to `booted` which will attach automatically and you can omit it e.g.
+![Default firebase react native flow](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/fcm-default.png "Default firebase react native flow")
 
-```
-# .env
+And here is the flow using this middleware:
 
-APNS_SIMULATOR_UUID=booted
-```
+![Intercepted firebase react native flow](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/fcm-default.png "Intercepted firebase react native flow")
 
-## How does it work?
+As depicted above, this module will add it's own FCM token and start listening instead of the app.  When a message is receieved, it converts it to an APNS file and pushes to the simulator to display the message immediately.
 
-This service proxies all calls as if you were hitting the API directly, but intercepts the `device_token` API call.
 
-Before you would point the application directly to the API like so:
-
-```
-Application ----> API
-```
-
-By pointing the application at this proxy, it will proxy all calls properly and allow us to intercept the device token call, e.g.
-
-```
-Application ----> iOS APNS Service ----> API
-```
-
-### Ok, but how does it actually work?
-
-This service uses [`express-http-proxy`](https://www.npmjs.com/package/express-http-proxy) to do the heavy lifiting when proxying normal calls to the API.
-
-In order to register this service as a client for FCM, this service uses a package called [`push-receiver`](https://www.npmjs.com/package/push-receiver).
-
-When a call is made to the API end point `/api/v1/comms/device_token`, express proxy will pick up that call and pass it through a body resolver.  Inside this resolver we switch the iphone token (that was passed in the body) with the new token that has been registered to the service.  A listener is then created which listens for all push notifications for the new injected.  When a push notification happens, the listener creates and APNS file and then runs the `xcrun simctl push` command with the given simulator uuid, target bundle and the APNS file that was created.  This gives the illusion that the push notification has come from the app itself. Very smoke and mirrors...
+# Licence
+Licenced under MIT.

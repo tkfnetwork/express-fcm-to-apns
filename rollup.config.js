@@ -22,12 +22,6 @@ const output = [
 
 const external = Object.keys(pkg.dependencies);
 
-// [
-//   'express-http-proxy',
-//   'object-hash',
-//   ''
-// ]
-
 const plugins = [
   typescript(),
   json(),
@@ -38,12 +32,8 @@ const plugins = [
     babelHelpers: 'inline',
   }),
   externals(),
-  commonjs({
-    namedExports: {
-      'push-receiver': ['listen', 'register'],
-    },
-  }),
-  // uglify(),
+  commonjs(),
+  uglify(),
 ];
 
 export default {

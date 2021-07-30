@@ -3,7 +3,7 @@ import fs from 'fs';
 import hash from 'object-hash';
 import { Event } from 'push-receiver';
 import { pipe, when } from 'ramda';
-import { Subject, tap } from 'rxjs';
+import { Subject } from 'rxjs';
 import { isNotEmpty } from '../../utils/logic';
 import { isMac } from '../../utils/os';
 import { LoggerType, ServiceLogger } from '../ServiceLogger';
@@ -16,20 +16,19 @@ import { Apns, ApnsServiceOptions } from './types';
  * json build and push
  */
 export class ApnsService extends ServiceLogger {
+  private apnsPaths$ = new Subject<string>();
   private dir: string;
   private targetBundle: string;
   private targetDevice: string;
 
-  apnsPaths$ = new Subject<string>();
-
   constructor({ targetBundle, targetDevice, dir }: ApnsServiceOptions, logger?: LoggerType) {
     super(logger);
+
     this.dir = dir;
     this.targetBundle = targetBundle;
     this.targetDevice = targetDevice;
 
-    // Listen for new paths and execute them
-    // when they are built
+    // Listen for new files being created and execute them
     this.apnsPaths$.subscribe(this.execute);
   }
 
@@ -104,5 +103,9 @@ export class ApnsService extends ServiceLogger {
    *
    * @param {object} event
    */
-  triggerApnsFromEvent = pipe(this.createApnsFromEvent, this.persistApns, when(isNotEmpty, this.apnsPaths$.next));
+  triggerApnsFromEvent = pipe(
+    this.createApnsFromEvent,
+    this.persistApns,
+    when(isNotEmpty, (path) => this.apnsPaths$.next(path))
+  );
 }

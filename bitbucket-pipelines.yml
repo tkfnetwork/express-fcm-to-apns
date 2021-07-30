@@ -1,0 +1,72 @@
+image: node:lts
+
+install: &install
+  step:
+    name: Install
+    caches:
+      - node
+    script:
+      - yarn
+
+code-quality: &code-quality
+  step:
+    name: Code Quality
+    caches:
+      - node
+    script:
+      - yarn lint
+      - yarn prettier:check
+
+build-prod: &build-prod
+  step:
+    name: Build (Production)
+    caches:
+      - node
+    script:
+      - yarn build
+
+test: &test
+  step:
+    name: Test
+    caches:
+      - node
+    script:
+      - yarn test:ci
+    artifacts:
+      - coverage/**
+
+test-coverage-badge: &test-coverage-badge
+  step:
+    name: Upload coverage badge
+    caches:
+      - node
+    script:
+      - yarn test:coverage:badge
+      - pipe: docker://bitbucketpipelines/bitbucket-upload-file:0.1.0
+        variables:
+          BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+          BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+          FILENAME: 'coverage/badge.svg'
+
+# deploy-package: &deploy-package
+#   step:
+#     name: Deploy package
+
+pipelines:
+  default:
+    - <<: *install
+    - <<: *code-quality
+    - <<: *test
+  branches:
+    master:
+      - <<: *install
+      - <<: *build-prod
+      - <<: *code-quality
+      - <<: *test
+  tags:
+    '*':
+      - <<: *install
+      - <<: *build-prod
+      - <<: *code-quality
+      - <<: *test
+      - <<: *test-coverage-badge
