@@ -20,5 +20,16 @@ pipelines:
           - node
         script:
           - yarn test:ci
+          - pip install coverage-badge
+          - coverage-badge -o coverage.svg
+          - pipe: docker://bitbucketpipelines/bitbucket-upload-file:0.1.0
+            variables:
+              BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+              BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+              FILENAME: 'coverage.svg'
         artifacts:
+          - coverage.svg
           - test-reports/**
+
+    - step:
+        name: Generate status badge

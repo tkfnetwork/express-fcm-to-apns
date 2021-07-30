@@ -1,6 +1,7 @@
 # 📥📲 Express FCM to APN middleware
 
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) ![Coverage](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/coverage.svg)
+
 
 
 Push notifications are (somewhat) supported inside the iOS simulator on mac.  They can be achieved by creating [APNS files](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification) and pushing them to the iOS simulator by dragging and dropping onto the simulator or using `xcrun`.
