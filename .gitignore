@@ -5,7 +5,6 @@
 coverage
 dist
 node_modules
-test-reports
 
 npm-debug.log
 yarn-error.log

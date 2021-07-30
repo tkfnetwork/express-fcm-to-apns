@@ -1,6 +1,6 @@
 # 📥📲 Express FCM to APN middleware
 
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) ![Coverage](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/coverage.svg)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) ![Coverage](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/coverage/badge.svg)
 
 
 
