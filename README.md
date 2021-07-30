@@ -52,4 +52,4 @@ Property | Type | Description
 `logger` | `console \| Logger` | An optional logger. Currently will accept a `winston` logger or the `console`
 `proxyOpts` | `object` | Supply options directly to the `express-http-proxy` function, [takes any of the core options](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/express-http-proxy/index.d.ts#L16)
 `senderId`* | `string` | This is the FCM sender ID which can be found in your firebase console
-`tokenPath` | `string`[] | Supply the path, as array segments, in the post body to the token that is being posted e.g. `['data', 'token']` for `{ data: { token: '<some_token>' }}`
+`tokenPath`* | `string`[] | Supply the path, as array segments, in the post body to the token that is being posted e.g. `['data', 'token']` for `{ data: { token: '<some_token>' }}`
