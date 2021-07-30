@@ -30,6 +30,3 @@ pipelines:
         artifacts:
           - coverage.svg
           - test-reports/**
-
-    - step:
-        name: Generate status badge
