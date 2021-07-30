@@ -20,7 +20,7 @@ pipelines:
           - node
         script:
           - yarn test:ci
-          - apt update && apt install python3-pip
+          - apt update && apt install python3-pip -y
           - pip install coverage-badge
           - coverage-badge -o coverage.svg
           - pipe: docker://bitbucketpipelines/bitbucket-upload-file:0.1.0
