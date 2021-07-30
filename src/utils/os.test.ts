@@ -2,7 +2,7 @@ import { isMac, isOS } from './os';
 import process from 'process';
 import { without } from 'ramda';
 
-const oss: Array<NodeJS.Platform> = [
+export const oss: Array<NodeJS.Platform> = [
   'aix',
   'android',
   'cygwin',
