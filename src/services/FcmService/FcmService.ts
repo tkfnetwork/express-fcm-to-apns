@@ -55,14 +55,13 @@ export class FcmService extends ServiceLogger {
       return this.credentials;
     }
 
-    const result = await register(this.senderId.toString());
+    this.appToken = appToken;
+    this.credentials = await register(this.senderId.toString());
 
     this.logger?.info(`[FCM]: Registered new FCM token`);
-    this.logger?.info(`[FCM][FCM Token]: ${result.fcm.token}`);
+    this.logger?.info(`[FCM][FCM Token]: ${this.getToken()}`);
 
-    this.appToken = appToken;
-
-    return result;
+    return this.credentials;
   };
 
   /**
@@ -85,14 +84,12 @@ export class FcmService extends ServiceLogger {
       },
 
       // Push incoming messages to the observable
-      this.message$.next
+      (event) => this.message$.next(event)
     );
 
     this.logger?.info(`[FCM]: Started listening for FCM messages...`);
     this.logger?.info(`[FCM][App Token]: ${appToken}`);
     this.logger?.info(`[FCM][FCM Token]: ${credentials.fcm.token}`);
-
-    this.credentials = credentials;
 
     return this.message$;
   };
