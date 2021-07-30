@@ -20,3 +20,5 @@ pipelines:
           - node
         script:
           - yarn test:ci
+        artifacts:
+          - test-reports/**
