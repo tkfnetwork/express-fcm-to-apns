@@ -8,7 +8,6 @@ pipelines:
           - node
         script:
           - yarn
-          - yarn add --dev jest-coverage-badges
     - step:
         name: Build
         caches:
