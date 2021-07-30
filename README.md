@@ -33,8 +33,8 @@ app.use(
     proxyOpts: {
       https: true,
     },
-    senderId: '1234321234,
-    tokenPath: ['token'],
+    senderId: '1234321234',
+    tokenPath: ['data', 'token'],
   })
 );
 ```
@@ -53,3 +53,7 @@ Property | Type | Description
 `proxyOpts` | `object` | Supply options directly to the `express-http-proxy` function, [takes any of the core options](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/express-http-proxy/index.d.ts#L16)
 `senderId`* | `string` | This is the FCM sender ID which can be found in your firebase console
 `tokenPath`* | `string`[] | Supply the path, as array segments, in the post body to the token that is being posted e.g. `['data', 'token']` for `{ data: { token: '<some_token>' }}`
+
+## How it works
+
+This middleware utilises [`express-http-proxy`](https://www.npmjs.com/package/express-http-proxy) and [`push-receiver`](https://www.npmjs.com/package/push-receiver) under the hood with the former used to intercept the token call (and pass all other calls unaffected on to the underlying API) and the later used to register a GCM and FCM token and start listening for messages to that token. 

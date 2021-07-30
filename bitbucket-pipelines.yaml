@@ -1,0 +1,22 @@
+image: node:11
+
+pipelines:
+  default:
+    - step:
+        name: Install
+        caches:
+          - node
+        script:
+          - yarn
+    - step:
+        name: Build
+        caches:
+          - node
+        script:
+          - yarn build
+    - step:
+        name: Test
+        caches:
+          - node
+        script:
+          - yarn test:ci
