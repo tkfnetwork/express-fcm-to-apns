@@ -3,7 +3,7 @@ import fs from 'fs';
 import hash from 'object-hash';
 import { Event } from 'push-receiver';
 import { pipe, when } from 'ramda';
-import { Subject, tap } from 'rxjs';
+import { Subject } from 'rxjs';
 import { isNotEmpty } from '../../utils/logic';
 import { isMac } from '../../utils/os';
 import { LoggerType, ServiceLogger } from '../ServiceLogger';
