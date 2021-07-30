@@ -3,9 +3,10 @@ import fs from 'fs';
 import hash from 'object-hash';
 import { Event } from 'push-receiver';
 import { pipe, when } from 'ramda';
-import { Subject } from 'rxjs';
+import { Subject, tap } from 'rxjs';
 import { isNotEmpty } from '../../utils/logic';
 import { isMac } from '../../utils/os';
+import { LoggerType, ServiceLogger } from '../ServiceLogger';
 import { Apns, ApnsServiceOptions } from './types';
 
 /**
@@ -14,14 +15,15 @@ import { Apns, ApnsServiceOptions } from './types';
  * Handles all functionality in relation to the APNS
  * json build and push
  */
-export class ApnsService {
+export class ApnsService extends ServiceLogger {
   private dir: string;
   private targetBundle: string;
   private targetDevice: string;
 
   apnsPaths$ = new Subject<string>();
 
-  constructor({ targetBundle, targetDevice, dir }: ApnsServiceOptions) {
+  constructor({ targetBundle, targetDevice, dir }: ApnsServiceOptions, logger?: LoggerType) {
+    super(logger);
     this.dir = dir;
     this.targetBundle = targetBundle;
     this.targetDevice = targetDevice;
@@ -46,9 +48,14 @@ export class ApnsService {
    */
   private execute = (apnsPath: string) => {
     if (!isMac()) {
-      console.warn('APNS can only be executed on a mac');
+      this.logger?.warn('APNS can only be executed on a mac');
       return;
     }
+
+    this.logger?.info(`[APNS]: Executing...`);
+    this.logger?.info(`[APNS][Path]: ${apnsPath}`);
+    this.logger?.info(`[APNS][Bundle]: ${this.targetBundle}`);
+    this.logger?.info(`[APNS][Device]: ${this.targetDevice}`);
 
     spawn('xcrun', ['simctl', 'push', this.targetDevice, this.targetBundle, apnsPath]);
   };
@@ -60,6 +67,8 @@ export class ApnsService {
    */
   persistApns = (apns: Apns) => {
     const fileName = this.buildApnsPathName(apns);
+
+    this.logger?.info(`[APNS]: File created at "${fileName}"`);
 
     try {
       fs.writeFileSync(fileName, JSON.stringify(apns));
@@ -74,13 +83,19 @@ export class ApnsService {
    *
    * @param {object} event
    */
-  createApnsFromEvent = (event: Event): Apns => ({
-    aps: {
-      alert: event.notification.notification,
-      data: event.notification.data,
-    },
-    'Simulator Target Bundle': this.targetBundle,
-  });
+  createApnsFromEvent = (event: Event): Apns => {
+    const apns: Apns = {
+      aps: {
+        alert: event.notification.notification,
+        data: event.notification.data,
+      },
+      'Simulator Target Bundle': this.targetBundle,
+    };
+
+    this.logger?.info(`[APNS]: Created APNS object ${JSON.stringify(apns)} `);
+
+    return apns;
+  };
 
   /**
    * Takes an FCM event and runs it through

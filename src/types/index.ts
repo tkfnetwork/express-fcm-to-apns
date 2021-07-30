@@ -1,5 +1,6 @@
 import { ProxyOptions } from 'express-http-proxy';
 import { ApnsServiceOptions } from '../services';
+import { LoggerType } from '../services';
 
 export type Options = {
   apns: ApnsServiceOptions;
@@ -15,8 +16,10 @@ export type Options = {
 
   /**
    * The token path is used to extract the
-   * posted token and to inject the new token
-   * back into the body payload
+   * the token from the body of the intercepted api
+   * call and is also used to inject the new token
    */
   tokenPath: Array<string>;
+
+  logger?: LoggerType;
 };

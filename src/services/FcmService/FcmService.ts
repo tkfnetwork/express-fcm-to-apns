@@ -1,5 +1,6 @@
 import { Client, Credentials, Event, listen, register } from 'push-receiver';
 import { Subject } from 'rxjs';
+import { LoggerType, ServiceLogger } from '../ServiceLogger';
 
 /**
  * FCM Service
@@ -8,7 +9,7 @@ import { Subject } from 'rxjs';
  * via `push-receiver` and push new messages to an
  * observable that can be subscribe for
  */
-export class FcmService {
+export class FcmService extends ServiceLogger {
   private appToken: string | undefined;
   private credentials: Credentials | undefined;
   private listener: Client | undefined;
@@ -16,9 +17,10 @@ export class FcmService {
   private persistentIds: Array<string> = [];
   private senderId: string | number;
 
-  constructor(senderId: string | number) {
-    this.senderId = senderId;
+  constructor(senderId: string | number, logger?: LoggerType) {
+    super(logger);
 
+    this.senderId = senderId;
     this.subscribePersistentIds();
   }
 
@@ -43,9 +45,21 @@ export class FcmService {
    * @param {string} appToken
    */
   private register = async (appToken: string) => {
-    if (this.appToken === appToken && this.credentials) return this.credentials;
+    this.logger?.info(`[FCM]: Recieved app token`);
+    this.logger?.info(`[FCM][App Token]: ${appToken}`);
+
+    if (this.appToken === appToken && this.credentials) {
+      this.logger?.info(`[FCM]: Credentials already exist`);
+      this.logger?.info(`[FCM][FCM Token]: ${this.credentials.fcm.token}`);
+
+      return this.credentials;
+    }
 
     const result = await register(this.senderId.toString());
+
+    this.logger?.info(`[FCM]: Registered new FCM token`);
+    this.logger?.info(`[FCM][FCM Token]: ${result.fcm.token}`);
+
     this.appToken = appToken;
 
     return result;
@@ -74,7 +88,13 @@ export class FcmService {
       this.message$.next
     );
 
-    return this.message$.subscribe;
+    this.logger?.info(`[FCM]: Started listening for FCM messages...`);
+    this.logger?.info(`[FCM][App Token]: ${appToken}`);
+    this.logger?.info(`[FCM][FCM Token]: ${credentials.fcm.token}`);
+
+    this.credentials = credentials;
+
+    return this.message$;
   };
 
   /**
