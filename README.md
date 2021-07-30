@@ -6,7 +6,7 @@
 
 Push notifications are (somewhat) supported inside the iOS simulator on mac.  They can be achieved by creating [APNS files](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification) and pushing them to the iOS simulator by dragging and dropping onto the simulator or using `xcrun`.
 
-This middleware takes advantage of the later by interecepting outgoing FCM tokens (when you make a request to save your FCM token to an API) and placing itself in the middle.
+This middleware takes advantage of the later by intercepting outgoing FCM tokens (when you make a request to save your FCM token to an API) and placing itself in the middle.
 
 ## Install
 
@@ -49,6 +49,7 @@ Property | Type | Description
 `apiUrl`*   | `string` | This is your proxy API host (without any suffixes such as `/api/v1/`) as this will be handled when you make the requests to the root express app
 `apns.dir`* | `string` | The directory to write the APNS files too
 `apns.targetBundle`* | `string` | This is the bundle name on the simulator that will be targeted with the APNS files
+`apns.targetDevice`* | `string` | Supply the iOS simulator UUID, or simply supply `"booted"` when there is only one simulator running 
 `interceptPath`* | `string` | The API proxy path that will be interecepted. For example if you post your token to `/api/v1/token` then you should supply that to this property
 `logger` | `console \| Logger` | An optional logger. Currently will accept a `winston` logger or the `console`
 `proxyOpts` | `object` | Supply options directly to the `express-http-proxy` function, [takes any of the core options](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/express-http-proxy/index.d.ts#L16)
