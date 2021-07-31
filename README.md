@@ -43,7 +43,6 @@ In order for the application to show notifications properly the following must b
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
 
-
   // Handle notification inside the simulator
   #if TARGET_IPHONE_SIMULATOR
     completionHandler(UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionBanner);
