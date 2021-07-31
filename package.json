@@ -9,6 +9,9 @@
   ],
   "main": "dist/index.js",
   "module": "dist/index.es.js",
+  "files": [
+    "dist"
+  ],
   "author": "Kris Pomphrey <kris@tkf.network>",
   "license": "MIT",
   "private": true,

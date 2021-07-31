@@ -48,6 +48,10 @@ test-coverage-badge: &test-coverage-badge
           BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
           FILENAME: 'coverage/badge.svg'
 
+# deploy-package: &deploy-package
+#   step:
+#     name: Deploy package
+
 pipelines:
   default:
     - <<: *install
