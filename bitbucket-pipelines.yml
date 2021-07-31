@@ -56,6 +56,13 @@ pipelines:
   branches:
     master:
       - <<: *install
+      - <<: *build-prod
       - <<: *code-quality
       - <<: *test
+  tags:
+    '*':
+      - <<: *install
       - <<: *build-prod
+      - <<: *code-quality
+      - <<: *test
+      - <<: *test-coverage-badge
