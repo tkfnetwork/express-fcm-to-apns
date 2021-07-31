@@ -14,7 +14,6 @@
   ],
   "author": "Kris Pomphrey <kris@tkf.network>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "build": "rollup -c",
     "build:watch": "rollup -cw",
