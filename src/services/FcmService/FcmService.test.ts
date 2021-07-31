@@ -1,6 +1,6 @@
 import faker from 'faker';
 import { register, listen, Event } from 'push-receiver';
-import { prop, propOr, times } from 'ramda';
+import { propOr, times } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { FcmService } from './FcmService';
 

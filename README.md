@@ -17,6 +17,41 @@ yarn add express-fcm-to-apns
 npm i express-fcm-to-apns
 ```
 
+### Application code
+This middleware will only work if the application code has been setup to handle incoming APNS messages via the `userNotificationCenter`. For example, if you are using `react-native` and have followed the official guides to install firebase into your app then APNS will not work out of the box.
+
+In order for the application to show notifications properly the following must be present in the `AppDelegate.m` and `AppDelegate.h`
+#### `AppDelegate.h`
+
+```objective-c
+#import <UserNotifications/UserNotifications.h>
+
+@interface AppDelegate : UIResponder <UNUserNotificationCenterDelegate>
+```
+
+#### `AppDelegate.m`
+```objective-c
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    // ... rest of the application code
+
+    // Assign at least one notification handler
+    #if TARGET_IPHONE_SIMULATOR
+        [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+    #endif
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
+
+
+  // Handle notification inside the simulator
+  #if TARGET_IPHONE_SIMULATOR
+    completionHandler(UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionBanner);
+  #endif
+
+}
+```
+
 ## Usage
 For this to work you will need to be running the iOS simulator and a small express app.  For example, if your app is pointing at `https://path.to.host/my/api/` , you'll want to point it to your local express app `http://localhost:8080/my/api/`.  You can then pass in the api url to listen to via the options.  Here is an example in express:
 

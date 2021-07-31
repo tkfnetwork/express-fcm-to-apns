@@ -129,6 +129,8 @@ describe('#triggerApnsFromEvent()', () => {
         warn: jest.fn(),
         info: jest.fn(),
       };
+
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const service = new ApnsService({ targetBundle, targetDevice, dir }, logger as any);
 
       service.triggerApnsFromEvent(event);

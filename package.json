@@ -17,11 +17,12 @@
     "build:watch": "rollup -cw",
     "lint": "eslint 'src/**/*.{json,ts,tsx}'",
     "prettier": "prettier 'src/**/*.{ts,tsx,json}'",
+    "prettier:check": "yarn prettier --check",
     "prettier:write": "yarn prettier --write",
     "test": "jest",
     "test:ci": "cross-env CI=true jest --coverage",
     "test:coverage": "jest --coverage",
-    "test:coverage:badges": "make-coverage-badge",
+    "test:coverage:badge": "make-coverage-badge",
     "test:watch": "jest --watch"
   },
   "dependencies": {
