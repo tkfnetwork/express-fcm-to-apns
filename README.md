@@ -92,4 +92,18 @@ Property | Type | Description
 
 ## How it works
 
-This middleware utilises [`express-http-proxy`](https://www.npmjs.com/package/express-http-proxy) and [`push-receiver`](https://www.npmjs.com/package/push-receiver) under the hood with the former used to intercept the token call (and pass all other calls unaffected on to the underlying API) and the later used to register a GCM and FCM token and start listening for messages to that token. 
+This middleware utilises [`express-http-proxy`](https://www.npmjs.com/package/express-http-proxy) and [`push-receiver`](https://www.npmjs.com/package/push-receiver) under the hood with the former used to intercept the token call (and pass all other calls unaffected on to the underlying API) and the later used to register a GCM and FCM token and start listening for messages to that token.
+
+For example, here is the typical firebase react-native flow:
+
+![Default firebase react native flow](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/fcm-default.png "Default firebase react native flow")
+
+And here is the flow using this middleware:
+
+![Intercepted firebase react native flow](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/fcm-default.png "Intercepted firebase react native flow")
+
+As depicted above, this module will add it's own FCM token and start listening instead of the app.  When a message is receieved, it converts it to an APNS file and pushes to the simulator to display the message immediately.
+
+
+# Licence
+Licenced under MIT.

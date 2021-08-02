@@ -1,0 +1,9 @@
+.code
+.idea
+
+coverage
+node_modules
+
+yarn-error.log
+
+bitbucket-pipelines.yml
