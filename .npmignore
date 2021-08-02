@@ -13,4 +13,3 @@ jest.config.json
 prettier.config.js
 rollup.config.js
 tsconfig.json
-yarn.lock
