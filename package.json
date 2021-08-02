@@ -1,6 +1,6 @@
 {
   "name": "express-fcm-to-apns",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Express middleware that intercepts FCM token storage calls and listens for messages, converting them to APNS",
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
   ],
   "main": "dist/index.js",
   "module": "dist/index.es.js",
-  "author": "Kris Pomphrey <kris@tkf.network>",
+  "author": "tkfnetwork <public@tkf.network>",
   "license": "MIT",
   "scripts": {
     "build": "rollup -c",
