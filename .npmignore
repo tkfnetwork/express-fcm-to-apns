@@ -9,7 +9,7 @@ yarn-error.log
 bitbucket-pipelines.yml
 
 .eslintrc
-jest.config.json
+jest.config.js
 prettier.config.js
 rollup.config.js
 tsconfig.json
