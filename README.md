@@ -100,7 +100,7 @@ For example, here is the typical firebase react-native flow:
 
 And here is the flow using this middleware:
 
-![Intercepted firebase react native flow](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/fcm-default.png "Intercepted firebase react native flow")
+![Intercepted firebase react native flow](https://bitbucket.org/tkfnetwork/express-fcm-to-apns/downloads/fcm-intercepted.png "Intercepted firebase react native flow")
 
 As depicted above, this module will add it's own FCM token and start listening instead of the app.  When a message is receieved, it converts it to an APNS file and pushes to the simulator to display the message immediately.
 
