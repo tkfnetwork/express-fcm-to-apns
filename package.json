@@ -1,6 +1,6 @@
 {
   "name": "express-fcm-to-apns",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Express middleware that intercepts FCM token storage calls and listens for messages, converting them to APNS",
   "repository": {
     "type": "git",
