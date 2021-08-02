@@ -4,9 +4,9 @@
   "description": "Express middleware that intercepts FCM token storage calls and listens for messages, converting them to APNS",
   "repository": {
     "type": "git",
-    "url": "git+https://tkfnetwork@bitbucket.org/tkfnetwork/express-fcm-to-apns.git"
+    "url": "git+https://github.com/tkfnetwork/express-fcm-to-apns"
   },
-  "homepage": "https://bitbucket.org/tkfnetwork/express-fcm-to-apns#readme",
+  "homepage": "https://github.com/tkfnetwork/express-fcm-to-apns#readme",
   "keywords": [
     "apns",
     "express",
